@@ -2,239 +2,202 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <title>Sumobot BLE – Programación por Bloques</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programación por Bloques – Sumobot BLE</title>
 
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         body {
-            font-family: Inter, sans-serif;
+            font-family: system-ui, sans-serif;
         }
         .block {
             width: 90px;
             height: 90px;
-            cursor: grab;
-            user-select: none;
         }
         .executing {
-            animation: pulse 0.7s infinite;
+            animation: pulse 0.6s infinite;
         }
         @keyframes pulse {
             0% { transform: scale(1); }
-            70% { transform: scale(1.1); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
     </style>
 </head>
 
-<body class="bg-gray-100 min-h-screen p-6">
+<body class="bg-gray-100 min-h-screen flex justify-center p-4">
 
-<div class="max-w-5xl mx-auto">
-    <h1 class="text-4xl font-bold text-center mb-2">
-        Programación por Bloques – Sumobot BLE
+<div class="w-full max-w-4xl">
+
+    <h1 class="text-3xl font-bold text-center mb-2">
+        🤖 Sumobot BLE
     </h1>
 
-    <p id="ble-status"
-       class="text-center text-red-500 font-semibold mb-6">
+    <p id="ble-status" class="text-center font-semibold text-red-600 mb-6">
         BLE Desconectado
     </p>
 
-    <!-- BOTONES -->
-    <div class="flex justify-center gap-6 mb-8">
-        <button id="ble-btn"
-                class="px-8 py-4 bg-blue-600 text-white rounded-lg font-bold">
-            <i class="fas fa-bluetooth-b mr-2"></i> Conectar
-        </button>
-
-        <button id="run-btn"
-                class="px-8 py-4 bg-green-600 text-white rounded-lg font-bold">
-            <i class="fas fa-play mr-2"></i> Ejecutar
-        </button>
-
-        <button id="clear-btn"
-                class="px-8 py-4 bg-gray-600 text-white rounded-lg font-bold">
-            <i class="fas fa-trash mr-2"></i> Limpiar
-        </button>
-    </div>
-
     <!-- TOOLBOX -->
-    <div class="bg-white p-6 rounded-lg shadow mb-6">
+    <div class="bg-white rounded-xl shadow p-4 mb-6">
         <h2 class="text-xl font-semibold mb-4">Bloques</h2>
-        <div id="toolbox" class="flex gap-6">
-            <div class="block bg-blue-500 text-white rounded-lg flex items-center justify-center"
-                 data-action="forward" draggable="true">
+        <div id="toolbox" class="flex gap-4 justify-center">
+
+            <div class="block bg-blue-500 text-white rounded-xl flex items-center justify-center"
+                 data-action="forward">
                 <i class="fas fa-arrow-up fa-3x"></i>
             </div>
-            <div class="block bg-green-500 text-white rounded-lg flex items-center justify-center"
-                 data-action="left" draggable="true">
+
+            <div class="block bg-green-500 text-white rounded-xl flex items-center justify-center"
+                 data-action="left">
                 <i class="fas fa-arrow-left fa-3x"></i>
             </div>
-            <div class="block bg-green-500 text-white rounded-lg flex items-center justify-center"
-                 data-action="right" draggable="true">
+
+            <div class="block bg-green-500 text-white rounded-xl flex items-center justify-center"
+                 data-action="right">
                 <i class="fas fa-arrow-right fa-3x"></i>
             </div>
+
         </div>
+        <p class="text-center text-gray-500 mt-3">
+            👉 Tocá un bloque para agregarlo
+        </p>
     </div>
 
     <!-- WORKSPACE -->
-    <div class="bg-white p-6 rounded-lg shadow mb-6">
-        <h2 class="text-xl font-semibold mb-4">Secuencia</h2>
-        <div id="workspace"
-             class="min-h-[100px] border-2 border-dashed rounded-lg p-4 flex gap-4 flex-wrap">
+    <div class="bg-white rounded-xl shadow p-4 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Programa</h2>
+        <div id="workspace" class="flex flex-wrap gap-3 justify-center min-h-[100px]">
+            <p id="workspace-placeholder" class="text-gray-400">
+                Agregá bloques aquí
+            </p>
         </div>
     </div>
 
-    <!-- LOG -->
-    <div id="log"
-         class="bg-gray-800 text-white p-4 rounded-lg h-48 overflow-y-auto font-mono text-sm">
-        <p class="text-gray-400">Log de eventos...</p>
+    <!-- CONTROLS -->
+    <div class="flex justify-center gap-4 mb-6">
+        <button id="ble-btn"
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold">
+            <i class="fas fa-bluetooth-b mr-2"></i>Conectar
+        </button>
+
+        <button id="run-btn"
+                class="px-6 py-3 bg-indigo-600 text-white rounded-lg font-bold">
+            <i class="fas fa-play mr-2"></i>Ejecutar
+        </button>
+
+        <button id="clear-btn"
+                class="px-6 py-3 bg-gray-600 text-white rounded-lg font-bold">
+            <i class="fas fa-trash mr-2"></i>Limpiar
+        </button>
     </div>
+
+    <!-- LOG -->
+    <div id="log" class="bg-gray-900 text-white rounded-xl p-4 h-40 overflow-y-auto text-sm font-mono">
+        <p class="text-gray-400">Log del sistema…</p>
+    </div>
+
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+/* ================= BLE ================= */
 
-    // --------------------------------------------------
-    // ELEMENTOS
-    // --------------------------------------------------
-    const toolbox = document.getElementById('toolbox');
-    const workspace = document.getElementById('workspace');
-    const runBtn = document.getElementById('run-btn');
-    const clearBtn = document.getElementById('clear-btn');
-    const bleBtn = document.getElementById('ble-btn');
-    const bleStatus = document.getElementById('ble-status');
-    const log = document.getElementById('log');
+const UART_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+const UART_TX = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 
-    // --------------------------------------------------
-    // BLE
-    // --------------------------------------------------
-    let bleDevice = null;
-    let bleServer = null;
-    let bleService = null;
-    let bleTx = null;
+let bleDevice = null;
+let bleTx = null;
 
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
+const bleStatus = document.getElementById('ble-status');
+const log = document.getElementById('log');
 
-    const UART_SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
-    const UART_TX_UUID      = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
-    const UART_RX_UUID      = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+function logMsg(msg) {
+    log.innerHTML += `<p>> ${msg}</p>`;
+    log.scrollTop = log.scrollHeight;
+}
 
-    function logMsg(msg, color = 'text-blue-300') {
-        const p = document.createElement('p');
-        p.innerHTML = `<span class="${color}">${msg}</span>`;
-        log.appendChild(p);
-        log.scrollTop = log.scrollHeight;
+document.getElementById('ble-btn').onclick = async () => {
+    try {
+        bleDevice = await navigator.bluetooth.requestDevice({
+            filters: [{ services: [UART_SERVICE] }]
+        });
+
+        const server = await bleDevice.gatt.connect();
+        const service = await server.getPrimaryService(UART_SERVICE);
+        bleTx = await service.getCharacteristic(UART_TX);
+
+        bleStatus.textContent = `Conectado a ${bleDevice.name}`;
+        bleStatus.className = 'text-center font-semibold text-green-600 mb-6';
+        logMsg('BLE conectado');
+
+    } catch (e) {
+        logMsg('Error BLE: ' + e);
     }
+};
 
-    // --------------------------------------------------
-    // CONEXIÓN BLE
-    // --------------------------------------------------
-    bleBtn.addEventListener('click', async () => {
-        if (!bleDevice || !bleDevice.gatt.connected) {
-            connectBle();
-        } else {
-            bleDevice.gatt.disconnect();
-        }
-    });
-
-    async function connectBle() {
-        try {
-            logMsg('Buscando dispositivo BLE...');
-            bleDevice = await navigator.bluetooth.requestDevice({
-                filters: [{ services: [UART_SERVICE_UUID] }]
-            });
-
-            bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
-
-            bleServer = await bleDevice.gatt.connect();
-            bleService = await bleServer.getPrimaryService(UART_SERVICE_UUID);
-
-            bleTx = await bleService.getCharacteristic(UART_TX_UUID);
-            const bleRx = await bleService.getCharacteristic(UART_RX_UUID);
-
-            await bleRx.startNotifications();
-            bleRx.addEventListener('characteristicvaluechanged', (e) => {
-                const msg = decoder.decode(e.target.value);
-                logMsg('Robot: ' + msg, 'text-green-400');
-            });
-
-            bleStatus.textContent = 'Conectado a: ' + bleDevice.name;
-            bleStatus.className = 'text-center text-green-600 font-semibold mb-6';
-            bleBtn.innerHTML = '<i class="fas fa-unlink mr-2"></i> Desconectar';
-
-            logMsg('BLE conectado correctamente', 'text-green-400');
-
-        } catch (err) {
-            logMsg('Error BLE: ' + err.message, 'text-yellow-400');
-        }
+async function sendBLE(text) {
+    if (!bleTx) {
+        logMsg('BLE no conectado');
+        return;
     }
+    const data = new TextEncoder().encode(text);
+    await bleTx.writeValueWithoutResponse(data);
+    logMsg('Enviado: ' + text);
+}
 
-    function onDisconnected() {
-        bleStatus.textContent = 'BLE Desconectado';
-        bleStatus.className = 'text-center text-red-500 font-semibold mb-6';
-        bleBtn.innerHTML = '<i class="fas fa-bluetooth-b mr-2"></i> Conectar';
-        logMsg('BLE desconectado', 'text-yellow-400');
-    }
+/* ================= BLOQUES ================= */
 
-    // --------------------------------------------------
-    // DRAG & DROP
-    // --------------------------------------------------
-    toolbox.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('block')) {
-            e.dataTransfer.setData('action', e.target.dataset.action);
-        }
-    });
+const toolbox = document.getElementById('toolbox');
+const workspace = document.getElementById('workspace');
+const placeholder = document.getElementById('workspace-placeholder');
 
-    workspace.addEventListener('dragover', e => e.preventDefault());
+toolbox.addEventListener('click', e => {
+    const block = e.target.closest('.block');
+    if (!block) return;
 
-    workspace.addEventListener('drop', (e) => {
-        e.preventDefault();
-        const action = e.dataTransfer.getData('action');
-        if (!action) return;
+    placeholder.style.display = 'none';
 
-        const block = document.createElement('div');
-        block.className =
-            'block bg-indigo-500 text-white rounded-lg flex items-center justify-center';
-        block.dataset.action = action;
-        block.textContent = action.toUpperCase();
-        workspace.appendChild(block);
-    });
+    const copy = block.cloneNode(true);
+    workspace.appendChild(copy);
 
-    // --------------------------------------------------
-    // BOTONES
-    // --------------------------------------------------
-    clearBtn.addEventListener('click', () => {
-        workspace.innerHTML = '';
-        logMsg('Workspace limpio');
-    });
-
-    runBtn.addEventListener('click', async () => {
-        const blocks = workspace.querySelectorAll('.block');
-        if (blocks.length === 0) return;
-
-        const map = { forward: 'F', left: 'L', right: 'R' };
-        const seq = Array.from(blocks)
-                         .map(b => map[b.dataset.action])
-                         .join(',');
-
-        logMsg('Secuencia: ' + seq);
-
-        if (bleTx) {
-            // 🔴 CORRECCIÓN CRÍTICA: agregar \n
-            await bleTx.writeValueWithoutResponse(
-                encoder.encode(seq + "\n")
-            );
-            logMsg('Enviado por BLE', 'text-green-400');
-        }
-    });
-
+    logMsg('Bloque agregado: ' + block.dataset.action);
 });
+
+/* ================= CONTROLES ================= */
+
+document.getElementById('clear-btn').onclick = () => {
+    workspace.innerHTML = '';
+    workspace.appendChild(placeholder);
+    placeholder.style.display = 'block';
+    log.innerHTML = '';
+};
+
+document.getElementById('run-btn').onclick = async () => {
+    const blocks = workspace.querySelectorAll('.block');
+    if (blocks.length === 0) {
+        logMsg('No hay bloques');
+        return;
+    }
+
+    const map = { forward: 'F', left: 'L', right: 'R' };
+    const cmds = Array.from(blocks).map(b => map[b.dataset.action]);
+    const seq = cmds.join(',');
+
+    await sendBLE(seq);
+
+    for (const b of blocks) {
+        b.classList.add('executing');
+        await new Promise(r => setTimeout(r, 500));
+        b.classList.remove('executing');
+    }
+
+    logMsg('Programa finalizado');
+};
 </script>
 
 </body>
 </html>
-
